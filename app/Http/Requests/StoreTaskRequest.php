@@ -23,6 +23,7 @@ class StoreTaskRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'is_completed' => ['boolean'],
         ];
     }
 }
