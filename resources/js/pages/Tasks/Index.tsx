@@ -10,11 +10,13 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button, buttonVariants } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 export default function Index({ tasks }: { tasks: Task[] }) {
     const deleteTask = (id: number) => {
         if (confirm('Are you sure?')) {
             router.delete(route('tasks.destroy', { id }));
+            toast.success('Task deleted successfully');
         }
     };
 
