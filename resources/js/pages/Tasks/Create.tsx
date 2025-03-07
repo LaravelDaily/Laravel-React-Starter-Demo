@@ -5,10 +5,17 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
+import { BreadcrumbItem } from '@/types';
 
 type CreateTaskForm = {
     name?: string;
 }
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Tasks', href: '/tasks' },
+    { title: 'Create', href: '/tasks' },
+];
 
 export default function Create() {
     const taskName = useRef<HTMLInputElement>(null);
@@ -35,7 +42,7 @@ export default function Create() {
         });
     };
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Task" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <form onSubmit={createTask} className="space-y-6">

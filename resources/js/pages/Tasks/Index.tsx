@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Task } from '@/types';
+import { BreadcrumbItem, Task } from '@/types';
 import {
     Table,
     TableBody,
@@ -12,6 +12,11 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button';
 import { toast } from 'sonner';
 
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Tasks', href: '/tasks' },
+];
+
 export default function Index({ tasks }: { tasks: Task[] }) {
     const deleteTask = (id: number) => {
         if (confirm('Are you sure?')) {
@@ -21,7 +26,7 @@ export default function Index({ tasks }: { tasks: Task[] }) {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tasks List" />
             <div className={'mt-8'}>
                 <Link className={buttonVariants({ variant: 'outline' })} href="/tasks/create">
