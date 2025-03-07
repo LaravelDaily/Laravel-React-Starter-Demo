@@ -23,7 +23,10 @@ export default function Index({ tasks }: { tasks: Task[] }) {
     return (
         <AppLayout>
             <Head title="Tasks List" />
-            <div>
+            <div className={'mt-8'}>
+                <Link className={buttonVariants({ variant: 'outline' })} href="/tasks/create">
+                    Create Task
+                </Link>
                 <Table className={'mt-4'}>
                     <TableHeader>
                         <TableRow>
@@ -40,10 +43,12 @@ export default function Index({ tasks }: { tasks: Task[] }) {
                                     {task.is_completed ? 'Completed' : 'In Progress'}
                                 </TableCell>
                                 <TableCell className="flex flex-row gap-x-2 text-right">
-                                    <Link className={buttonVariants({ variant: 'default' })} href={`/tasks/${task.id}/edit`}>
+                                    <Link className={buttonVariants({ variant: 'default' })}
+                                          href={`/tasks/${task.id}/edit`}>
                                         Edit
                                     </Link>
-                                    <Button variant={'destructive'} className={'cursor-pointer'} onClick={() => deleteTask(task.id)}>
+                                    <Button variant={'destructive'} className={'cursor-pointer'}
+                                            onClick={() => deleteTask(task.id)}>
                                         Delete
                                     </Button>
                                 </TableCell>

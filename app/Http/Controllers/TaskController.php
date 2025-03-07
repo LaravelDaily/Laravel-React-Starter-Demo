@@ -23,7 +23,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request)
     {
-        Task::create($request->validated());
+        Task::create($request->validated() + ['is_completed' => false]);
 
         return redirect()->route('tasks.index');
     }
