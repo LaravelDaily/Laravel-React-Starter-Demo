@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Task } from '@/types';
 import {
     Table,
@@ -8,9 +8,16 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { Button, buttonVariants } from '@/components/ui/button';
 
 export default function Index({ tasks }: { tasks: Task[] }) {
+    const deleteTask = (id: number) => {
+        if (confirm('Are you sure?')) {
+            router.delete(route('tasks.destroy', { id }));
+        }
+    };
+
     return (
         <AppLayout>
             <Head title="Tasks List" />
@@ -29,6 +36,14 @@ export default function Index({ tasks }: { tasks: Task[] }) {
                                 <TableCell>{task.name}</TableCell>
                                 <TableCell className={task.is_completed ? 'text-green-600' : 'text-red-700'}>
                                     {task.is_completed ? 'Completed' : 'In Progress'}
+                                </TableCell>
+                                <TableCell className="flex flex-row gap-x-2 text-right">
+                                    <Link className={buttonVariants({ variant: 'default' })} href={`/tasks/${task.id}/edit`}>
+                                        Edit
+                                    </Link>
+                                    <Button variant={'destructive'} className={'cursor-pointer'} onClick={() => deleteTask(task.id)}>
+                                        Delete
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
