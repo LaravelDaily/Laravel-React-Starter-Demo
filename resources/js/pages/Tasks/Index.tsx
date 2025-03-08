@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { BreadcrumbItem, Task } from '@/types';
+import { type BreadcrumbItem, type Task } from '@/types';
 import {
     Table,
     TableBody,

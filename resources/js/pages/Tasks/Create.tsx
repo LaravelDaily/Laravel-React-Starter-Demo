@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
-import { BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 
 type CreateTaskForm = {
     name?: string;
