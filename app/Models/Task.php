@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Task extends Model
+class Task extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -21,5 +24,18 @@ class Task extends Model
             'is_completed' => 'boolean',
             'due_date' => 'date'
         ];
+    }
+
+    protected $appends = [
+        'mediaFile'
+    ];
+
+    public function getMediaFileAttribute()
+    {
+        if ($this->relationLoaded('media')) {
+            return $this->getFirstMedia();
+        }
+
+        return null;
     }
 }

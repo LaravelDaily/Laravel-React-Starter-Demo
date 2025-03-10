@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Task } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 import { format } from 'date-fns';
 
@@ -13,6 +13,7 @@ type EditTaskForm = {
     name: string;
     is_completed: boolean;
     due_date?: string;
+    media?: string;
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,27 +25,33 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Edit({ task }: { task: Task }) {
     const taskName = useRef<HTMLInputElement>(null);
 
-    const { data, setData, errors, put, reset, processing } = useForm<Required<EditTaskForm>>({
+    const { data, setData, errors, reset, processing, progress } = useForm<EditTaskForm>({
         name: task.name,
         is_completed: task.is_completed,
         due_date: task.due_date,
+        media: '',
     });
 
     const editTask: FormEventHandler = (e) => {
         e.preventDefault();
 
-        put(route('tasks.update', task.id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                reset();
+        router.post(
+            route('tasks.update', task.id),
+            { ...data, _method: 'PUT' },
+            {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    reset();
+                },
+                onError: (errors) => {
+                    if (errors.name) {
+                        reset('name');
+                        taskName.current?.focus();
+                    }
+                },
             },
-            onError: (errors) => {
-                if (errors.name) {
-                    reset('name');
-                    taskName.current?.focus();
-                }
-            },
-        });
+        );
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -85,6 +92,29 @@ export default function Edit({ task }: { task: Task }) {
                         />
 
                         <InputError message={errors.due_date} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="media">Media</Label>
+
+                        <Input
+                            id="media"
+                            onChange={(e) => setData('media', e.target.files[0])}
+                            className="mt-1 block w-full"
+                            type="file"
+                        />
+
+                        {progress && (
+                            <progress value={progress.percentage} max="100">
+                                {progress.percentage}%
+                            </progress>
+                        )}
+
+                        <InputError message={errors.media} />
+
+                        {!task.mediaFile ? '' : (
+                            <a href={task.mediaFile.original_url} target="_blank" className="my-4 mx-auto"><img
+                                src={task.mediaFile.original_url} className={'w-32 h-32'} /></a>)}
                     </div>
 
                     <div className="flex items-center gap-4">
