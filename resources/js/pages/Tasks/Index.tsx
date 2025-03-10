@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { type BreadcrumbItem, type Task } from '@/types';
+import { type BreadcrumbItem, type PaginatedResponse, type Task } from '@/types';
 import {
     Table,
     TableBody,
@@ -11,13 +11,15 @@ import {
 } from "@/components/ui/table";
 import { Button, buttonVariants } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { TablePagination } from '@/components/table-pagination';
+import { format } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
     { title: 'Tasks', href: '/tasks' },
 ];
 
-export default function Index({ tasks }: { tasks: Task[] }) {
+export default function Index({ tasks }: { tasks: PaginatedResponse<Task> }) {
     const deleteTask = (id: number) => {
         if (confirm('Are you sure?')) {
             router.delete(route('tasks.destroy', { id }));
@@ -37,16 +39,18 @@ export default function Index({ tasks }: { tasks: Task[] }) {
                         <TableRow>
                             <TableHead>Task</TableHead>
                             <TableHead className="w-[100px]">Status</TableHead>
+                            <TableHead className="w-[100px]">Due Date</TableHead>
                             <TableHead className="w-[150px] text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {tasks.map((task) => (
+                        {tasks.data.map((task: Task) => (
                             <TableRow key={task.id}>
                                 <TableCell>{task.name}</TableCell>
                                 <TableCell className={task.is_completed ? 'text-green-600' : 'text-red-700'}>
                                     {task.is_completed ? 'Completed' : 'In Progress'}
                                 </TableCell>
+                                <TableCell>{task.due_date ? format(task.due_date, 'PPP') : ''}</TableCell>
                                 <TableCell className="flex flex-row gap-x-2 text-right">
                                     <Link className={buttonVariants({ variant: 'default' })}
                                           href={`/tasks/${task.id}/edit`}>
@@ -61,6 +65,8 @@ export default function Index({ tasks }: { tasks: Task[] }) {
                         ))}
                     </TableBody>
                 </Table>
+
+                <TablePagination resource={tasks}/>
             </div>
         </AppLayout>
     );

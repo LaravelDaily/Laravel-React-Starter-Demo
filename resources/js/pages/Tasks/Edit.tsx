@@ -7,10 +7,12 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Task } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
+import { format } from 'date-fns';
 
 type EditTaskForm = {
     name: string;
     is_completed: boolean;
+    due_date?: string;
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -25,6 +27,7 @@ export default function Edit({ task }: { task: Task }) {
     const { data, setData, errors, put, reset, processing } = useForm<Required<EditTaskForm>>({
         name: task.name,
         is_completed: task.is_completed,
+        due_date: task.due_date,
     });
 
     const editTask: FormEventHandler = (e) => {
@@ -64,9 +67,24 @@ export default function Edit({ task }: { task: Task }) {
                     <div className="grid gap-2">
                         <Label htmlFor="is_completed">Completed?</Label>
 
-                        <Checkbox checked={data.is_completed} onCheckedChange={() => setData('is_completed', !data.is_completed)} />
+                        <Checkbox checked={data.is_completed}
+                                  onCheckedChange={() => setData('is_completed', !data.is_completed)} />
 
                         <InputError message={errors.is_completed} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="name">Due Date</Label>
+
+                        <Input
+                            id="due_date"
+                            value={data.due_date ? format(data.due_date, 'yyyy-MM-dd') : ''}
+                            onChange={(e) => setData('due_date', format(new Date(e.target.value), 'yyyy-MM-dd'))}
+                            className="mt-1 block w-full"
+                            type="date"
+                        />
+
+                        <InputError message={errors.due_date} />
                     </div>
 
                     <div className="flex items-center gap-4">

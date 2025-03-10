@@ -6,9 +6,11 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 import { type BreadcrumbItem } from '@/types';
+import { format } from 'date-fns';
 
 type CreateTaskForm = {
-    name?: string;
+    name?: string,
+    due_date?: string
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -22,6 +24,7 @@ export default function Create() {
 
     const { data, setData, errors, post, reset, processing } = useForm<Required<CreateTaskForm>>({
         name: '',
+        due_date: '',
     });
 
     const createTask: FormEventHandler = (e) => {
@@ -58,6 +61,20 @@ export default function Create() {
                         />
 
                         <InputError message={errors.name} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="name">Due Date</Label>
+
+                        <Input
+                            id="due_date"
+                            value={data.due_date}
+                            onChange={(e) => setData('due_date', format(new Date(e.target.value), 'yyyy-MM-dd'))}
+                            className="mt-1 block w-full"
+                            type="date"
+                        />
+
+                        <InputError message={errors.due_date} />
                     </div>
 
                     <div className="flex items-center gap-4">
