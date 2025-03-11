@@ -93,3 +93,12 @@ export interface MediaFile {
     original_url: string,
     preview_url: string,
 }
+
+export interface TaskCategory {
+    id: number;
+    name: string;
+    tasks_count: number | null;
+    tasks: Task[] | null;
+    created_at: string;
+    updated_at: string;
+}
