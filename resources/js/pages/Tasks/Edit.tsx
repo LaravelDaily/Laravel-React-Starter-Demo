@@ -4,7 +4,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type Task } from '@/types';
+import { type BreadcrumbItem, type Task, type TaskCategory } from '@/types';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 import { format } from 'date-fns';
@@ -14,6 +15,7 @@ type EditTaskForm = {
     is_completed: boolean;
     due_date?: string;
     media?: string;
+    categories: string[];
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -22,7 +24,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Edit', href: '' },
 ];
 
-export default function Edit({ task }: { task: Task }) {
+export default function Edit({ task, categories }: { task: Task, categories: TaskCategory[] }) {
     const taskName = useRef<HTMLInputElement>(null);
 
     const { data, setData, errors, reset, processing, progress } = useForm<EditTaskForm>({
@@ -30,6 +32,7 @@ export default function Edit({ task }: { task: Task }) {
         is_completed: task.is_completed,
         due_date: task.due_date,
         media: '',
+        categories: task.task_categories.map((category) => category.id.toString()),
     });
 
     const editTask: FormEventHandler = (e) => {
@@ -115,6 +118,21 @@ export default function Edit({ task }: { task: Task }) {
                         {!task.mediaFile ? '' : (
                             <a href={task.mediaFile.original_url} target="_blank" className="my-4 mx-auto"><img
                                 src={task.mediaFile.original_url} className={'w-32 h-32'} /></a>)}
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="due_date">Categories</Label>
+
+                        <ToggleGroup type="multiple" variant={'outline'} size={'lg'} value={data.categories}
+                                     onValueChange={(value) => setData('categories', value)}>
+                            {categories.map((category) => (
+                                <ToggleGroupItem key={category.id} value={category.id.toString()}>
+                                    {category.name}
+                                </ToggleGroupItem>
+                            ))}
+                        </ToggleGroup>
+
+                        <InputError message={errors.due_date} />
                     </div>
 
                     <div className="flex items-center gap-4">

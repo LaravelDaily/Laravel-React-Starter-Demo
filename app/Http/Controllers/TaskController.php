@@ -13,7 +13,7 @@ class TaskController extends Controller
     public function index()
     {
         return Inertia::render('Tasks/Index', [
-            'tasks' => Task::with('media')->paginate(20)
+            'tasks' => Task::with('media', 'taskCategories')->paginate(20)
         ]);
     }
 
@@ -59,6 +59,8 @@ class TaskController extends Controller
             $task->getFirstMedia()?->delete();
             $task->addMedia($request->file('media'))->toMediaCollection();
         }
+
+        $task->taskCategories()->sync($request->validated('categories', []));
 
         return redirect()->route('tasks.index');
     }

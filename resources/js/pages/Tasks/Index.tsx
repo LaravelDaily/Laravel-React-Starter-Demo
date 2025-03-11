@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { type BreadcrumbItem, type PaginatedResponse, type Task } from '@/types';
+import { type BreadcrumbItem, type PaginatedResponse, type Task, type TaskCategory } from '@/types';
 import {
     Table,
     TableBody,
@@ -45,6 +45,7 @@ export default function Index({ tasks }: { tasks: PaginatedResponse<Task> }) {
                         <TableRow>
                             <TableHead>Task</TableHead>
                             <TableHead>File</TableHead>
+                            <TableHead className="w-[200px]">Categories</TableHead>
                             <TableHead className="w-[100px]">Status</TableHead>
                             <TableHead className="w-[100px]">Due Date</TableHead>
                             <TableHead className="w-[150px] text-right">Actions</TableHead>
@@ -63,6 +64,13 @@ export default function Index({ tasks }: { tasks: PaginatedResponse<Task> }) {
                                             </a>
                                         )
                                 }
+                                </TableCell>
+                                <TableCell className={'flex flex-row gap-x-2'}>
+                                    {task.task_categories?.map((category: TaskCategory) => (
+                                        <span key={category.id} className="rounded-full bg-gray-200 px-2 py-1 text-xs">
+                                            {category.name}
+                                        </span>
+                                    ))}
                                 </TableCell>
                                 <TableCell className={task.is_completed ? 'text-green-600' : 'text-red-700'}>
                                     {task.is_completed ? 'Completed' : 'In Progress'}
