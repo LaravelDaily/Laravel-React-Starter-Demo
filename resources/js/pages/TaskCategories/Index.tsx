@@ -1,8 +1,9 @@
 import AppLayout from '@/layouts/app-layout'
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { type BreadcrumbItem, type PaginatedResponse, type TaskCategory } from '@/types';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { TablePagination } from '@/components/table-pagination';
+import { toast } from 'sonner';
 import {
     Table,
     TableBody,
@@ -20,7 +21,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Index({ taskCategories }: { taskCategories: PaginatedResponse<TaskCategory> }) {
     const deleteTaskCategory = (taskCategory: TaskCategory) => {
-        // @TODO
+        if (taskCategory.tasks_count === 0) {
+            if (confirm('Are you sure you want to delete this task category?')) {
+                router.delete(route('task-categories.destroy', taskCategory.id));
+                toast.success('Task Category deleted successfully');
+            }
+        } else {
+            if (
+                confirm(
+                    'This category has tasks assigned to it. Are you sure you want to delete it? This will also delete all the tasks assigned to this category.',
+                )
+            ) {
+                router.delete(route('task-categories.destroy', taskCategory.id));
+                toast.success('Task Category deleted successfully');
+            }
+        }
     };
 
     return (
