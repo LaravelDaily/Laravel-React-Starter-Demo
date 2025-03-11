@@ -5,13 +5,15 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type TaskCategory } from '@/types';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { format } from 'date-fns';
 
 type CreateTaskForm = {
     name?: string,
     due_date?: string,
     media?: string,
+    categories?: string[],
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -20,13 +22,14 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Create', href: '/tasks' },
 ];
 
-export default function Create() {
+export default function Create({ categories }: { categories: TaskCategory[] }) {
     const taskName = useRef<HTMLInputElement>(null);
 
     const { data, setData, errors, post, reset, processing, progress } = useForm<Required<CreateTaskForm>>({
         name: '',
         due_date: '',
         media: '',
+        categories: [],
     });
 
     const createTask: FormEventHandler = (e) => {
@@ -96,6 +99,20 @@ export default function Create() {
                         )}
 
                         <InputError message={errors.media} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="due_date">Categories</Label>
+
+                        <ToggleGroup type="multiple" variant={'outline'} size={'lg'} value={data.categories} onValueChange={(value) => setData('categories', value)}>
+                            {categories.map((category) => (
+                                <ToggleGroupItem key={category.id} value={category.id.toString()}>
+                                    {category.name}
+                                </ToggleGroupItem>
+                            ))}
+                        </ToggleGroup>
+
+                        <InputError message={errors.due_date} />
                     </div>
 
                     <div className="flex items-center gap-4">
